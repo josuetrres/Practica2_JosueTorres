@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de Familia</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Detalle de Familia</h2>
+        {% if familia %}
+            <ul class="list-group">
+                <li class="list-group-item"><strong>ID:</strong> {{ familia.id }}</li>
+                <li class="list-group-item"><strong>Tiene Generador:</strong> {{ 'Sí' if familia.tieneGenerador else 'No' }}</li>
+                <li class="list-group-item"><strong>Cantidad de Personas:</strong> {{ familia.cantidadPersonas }}</li>
+                <li class="list-group-item"><strong>Razón de Uso:</strong> {{ familia.razonUso }}</li>
+            </ul>
+            <div class="mt-3">
+                <a href="{{ url_for('router.update_familia', id=familia.id) }}" class="btn btn-warning">Actualizar</a>
+                <form action="{{ url_for('router.delete_familia', id=familia.id) }}" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar esta familia?');">Eliminar</button>
+                </form>
+                <a href="{{ url_for('router.familia_list') }}" class="btn btn-secondary">Volver a la Lista de Familias</a>
+            </div>
+        {% else %}
+            <div class="alert alert-danger" role="alert">
+                No se encontró información de la familia.
+            </div>
+            <a href="{{ url_for('router.familia_list') }}" class="btn btn-secondary">Volver a la Lista de Familias</a>
+        {% endif %}
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

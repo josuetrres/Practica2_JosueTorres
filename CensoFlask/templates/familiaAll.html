@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Familias</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Lista de Familias</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tiene Generador</th>
+                    <th>Cantidad de Personas</th>
+                    <th>Razón de Uso</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for familia in lista %}
+                <tr>
+                    <td>{{ familia.id }}</td>
+                    <td>{{ 'Sí' if familia.tieneGenerador else 'No' }}</td>
+                    <td>{{ familia.cantidadPersonas }}</td>
+                    <td>{{ familia.razonUso }}</td>
+                    <td>
+                        <a href="{{ url_for('router.get_familia', id=familia.id) }}" class="btn btn-info btn-sm">Ver Detalles</a>
+                        <a href="{{ url_for('router.update_familia', id=familia.id) }}" class="btn btn-warning btn-sm">Actualizar</a>
+                        <form action="{{ url_for('router.delete_familia', id=familia.id) }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar esta familia?');">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{{ url_for('router.save_familia') }}" class="btn btn-success">Agregar Nueva Familia</a>
+        <a href="{{ url_for('router.index') }}" class="btn btn-primary">Home</a>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

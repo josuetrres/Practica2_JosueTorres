@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles del Generador</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Detalles del Generador</h1>
+
+        {% if generador %}
+            <ul class="list-group">
+                <li class="list-group-item"><strong>ID:</strong> {{ generador.id }}</li>
+                <li class="list-group-item"><strong>Marca:</strong> {{ generador.marca }}</li>
+                <li class="list-group-item"><strong>Potencia Generada:</strong> {{ generador.potenciaGenerada }} kW</li>
+                <li class="list-group-item"><strong>Costo:</strong> {{ generador.costo }} USD</li>
+                <li class="list-group-item"><strong>Consumo por Hora:</strong> {{ generador.consumoPorHora }} L/h</li>
+            </ul>
+        {% else %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+        {% endif %}
+        
+        <a href="{{ url_for('router.index') }}" class="btn btn-primary">Home</a>
+    </div>
+</body>
+</html>

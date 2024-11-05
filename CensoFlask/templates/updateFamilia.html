@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actualizar Familia</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Actualizar Familia</h2>
+        {% if familia %}
+            <form method="POST" action="{{ url_for('router.update_familia', id=familia.id) }}">
+                <div class="form-group">
+                    <label for="tieneGenerador">¿Tiene Generador?</label>
+                    <select class="form-control" id="tieneGenerador" name="tieneGenerador" required>
+                        <option value="true" {% if familia.tieneGenerador %}selected{% endif %}>Sí</option>
+                        <option value="false" {% if not familia.tieneGenerador %}selected{% endif %}>No</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="cantidadPersonas">Cantidad de Personas</label>
+                    <input type="number" class="form-control" id="cantidadPersonas" name="cantidadPersonas" value="{{ familia.cantidadPersonas }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="razonUso">Razón de Uso</label>
+                    <input type="text" class="form-control" id="razonUso" name="razonUso" value="{{ familia.razonUso }}" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Actualizar Familia</button>
+                <a href="{{ url_for('router.familia_list') }}" class="btn btn-secondary">Cancelar</a>
+            </form>
+            {% if error %}
+                <div class="alert alert-danger mt-3" role="alert">{{ error }}</div>
+            {% endif %}
+        {% else %}
+            <div class="alert alert-danger" role="alert">
+                No se encontró información de la familia para actualizar.
+            </div>
+            <a href="{{ url_for('router.familia_list') }}" class="btn btn-secondary">Volver a la Lista de Familias</a>
+        {% endif %}
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

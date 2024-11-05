@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Censos</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/style.css') }}">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 50px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1 class="mt-4 mb-4">Lista de Censos</h1>
+
+        <div class="mb-3">
+            <a href="{{ url_for('router.save_censo') }}" class="btn btn-primary">Crear Censo</a>
+        </div>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Provincia</th>
+                    <th scope="col">Familias</th>
+                    <th scope="col">Familias con Generador</th>
+                    <th scope="col" colspan="2" class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in lista %}
+                <tr>
+                    <th scope="row">{{ item.id }}</th>
+                    <td>{{ item.provincia }}</td>
+                    <td>{{ item.totalFamilias }}</td>
+                    <td>{{ item.familiasConGenerador }}</td>
+                    <td class="text-center">
+                        <a href="{{ url_for('router.get_censo', id=item.id) }}" class="btn btn-info">Detalle</a>
+                    </td>
+                    <td class="text-center">
+                        <a href="{{ url_for('router.update_censo', censo_id=item.id) }}" class="btn btn-warning">Actualizar</a>
+                    </td>
+                    <td class="text-center">
+                        <form method="POST" action="{{ url_for('router.delete_censo', id=item.id) }}" style="display:inline;">
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar este censo?');">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{{ url_for('router.index') }}" class="btn btn-primary">Home</a>
+    </div>
+
+    <script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+</body>
+</html>

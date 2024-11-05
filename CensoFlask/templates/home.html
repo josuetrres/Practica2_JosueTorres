@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Sistema de Censo Estadístico</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        h1, h2 {
+            color: #343a40;
+        }
+        .container {
+            margin-top: 50px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .btn {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bienvenido al Sistema de Censo Estadístico</h1>
+        <p>Este sistema permite registrar la compra de generadores de energía y gestionar información sobre las familias.</p>
+        
+        <h2>Funcionalidades del Sistema</h2>
+        <div class="list-group">
+
+            <a href="{{ url_for('router.home') }}" class="list-group-item list-group-item-action">Ver Lista de Censos</a>
+            <a href="{{ url_for('router.save_censo') }}" class="list-group-item list-group-item-action">Registrar Nuevo Censo</a>
+            <a href="{{ url_for('router.generador_list') }}" class="list-group-item list-group-item-action">Ver Lista de Generadores</a>
+            <a href="{{ url_for('router.familia_list') }}" class="list-group-item list-group-item-action">Ver Lista de Familias</a>
+            <a href="{{ url_for('router.save_generador') }}" class="list-group-item list-group-item-action">Registrar Nuevo Generador</a>
+            <a href="{{ url_for('router.save_familia') }}" class="list-group-item list-group-item-action">Registrar Nueva Familia</a>
+          
+        </div>
+        
+        <h2>Información Adicional</h2>
+        <p>En este sistema, se puede ver el costo de los generadores, el consumo por hora, la potencia generada y el uso que les dan las familias. Además, se puede registrar la situación de cada familia y su capacidad de adquirir generadores.</p>
+        <a href="{{ url_for('router.historial_list') }}" class="btn btn-primary">Ver Historial CRUD</a>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

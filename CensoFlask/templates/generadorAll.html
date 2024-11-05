@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Generadores</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Lista de Generadores</h2>
+        
+        <!-- Botón para crear un nuevo generador -->
+        <div class="mb-3">
+            <a href="{{ url_for('router.save_generador') }}" class="btn btn-primary">Crear Generador</a>
+        </div>
+
+        <!-- Tabla de generadores -->
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Marca</th>
+                    <th>Potencia Generada (kW)</th>
+                    <th>Costo</th>
+                    <th>Consumo por Hora (kWh)</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for generador in lista %}
+                <tr>
+                    <td>{{ generador.id }}</td>
+                    <td>{{ generador.marca }}</td>
+                    <td>{{ generador.potenciaGenerada }}</td>
+                    <td>{{ generador.costo }}</td>
+                    <td>{{ generador.consumoPorHora }}</td>
+                    <td>
+                        <!-- Botón para ver detalles del generador -->
+                        <a href="{{ url_for('router.get_generador', id=generador.id) }}" class="btn btn-info btn-sm">Detalle</a>
+                        
+                        <!-- Botón para actualizar el generador -->
+                        <a href="{{ url_for('router.update_generador', id=generador.id) }}" class="btn btn-warning btn-sm">Actualizar</a>
+                        
+                        <!-- Botón para eliminar el generador -->
+                        <form action="{{ url_for('router.delete_generador', id=generador.id) }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar este generador?')">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <!-- Botón para volver a la página principal -->
+        <a href="{{ url_for('router.index') }}" class="btn btn-primary">Home</a>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

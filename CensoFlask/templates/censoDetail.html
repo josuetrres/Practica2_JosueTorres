@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles del Censo</title>
+    <link href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/css/style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h2>Detalles del Censo</h2>
+        {% if error %}
+            <div class="alert alert-danger">{{ error }}</div>
+        {% else %}
+            <ul class="list-group">
+                <li class="list-group-item"><strong>ID:</strong> {{ censo.id }}</li>
+                <li class="list-group-item"><strong>Provincia:</strong> {{ censo.provincia }}</li>
+                <li class="list-group-item"><strong>Total de Familias:</strong> {{ censo.totalFamilias }}</li>
+                <li class="list-group-item"><strong>Familias con Generador:</strong> {{ censo.familiasConGenerador }}</li>
+            </ul>
+        {% endif %}
+        <a href="{{ url_for('router.index') }}" class="btn btn-primary">Home</a>
+    </div>
+    <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+</body>
+</html>
