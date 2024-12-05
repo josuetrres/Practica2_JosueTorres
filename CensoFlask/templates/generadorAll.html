@@ -9,6 +9,55 @@
 <body>
     <div class="container mt-5">
         <h2>Lista de Generadores</h2>
+
+                <!-- Controles de búsqueda -->
+            <div class="form-inline mb-3">
+                    <label class="mr-2" for="criterioBusqueda">Criterio de Búsqueda:</label>
+                    <select class="form-control mr-3" id="criterioBusqueda">
+                        <option value="id">ID</option>
+                        <option value="marca">Marca</option>
+                        <option value="potenciaGenerada">Potencia Generada</option>
+                        <option value="costo">Costo</option>
+                        <option value="consumoPorHora">Consumo por hora</option>
+                    </select>
+        
+                    <label class="mr-2" for="metodoBusqueda">Método:</label>
+                    <select class="form-control mr-3" id="metodoBusqueda">
+                        <option value="linear">Búsqueda Lineal</option>
+                        <option value="binary">Búsqueda Binaria</option>
+                    </select>
+        
+                    <label class="mr-2" for="valorBusqueda">Valor:</label>
+                    <input type="text" class="form-control mr-3" id="valorBusqueda" placeholder="Ingrese el valor a buscar">
+        
+                    <button class="btn btn-primary" id="buscarGeneradores">Buscar</button>
+            </div>
+        
+        <div class="form-inline mb-3">
+            <label class="mr-2" for="criterio">Criterio:</label>
+            <select class="form-control mr-3" id="criterio">
+                <option value="id">ID</option>
+                <option value="marca">Marca</option>
+                <option value="potenciaGenerada">Potencia Generada</option>
+                <option value="costo">Costo</option>
+                <option value="consumoPorHora">Consumo por hora</option>
+            </select>
+    
+            <label class="mr-2" for="tipo">Tipo:</label>
+            <select class="form-control mr-3" id="tipo">
+                <option value="1">Ascendente</option>
+                <option value="0">Descendente</option>
+            </select>
+    
+            <label class="mr-2" for="metodo">Método:</label>
+            <select class="form-control mr-3" id="metodo">
+                <option value="merge">Merge</option>
+                <option value="quick">Quick</option>
+                <option value="shell">Shell</option>
+            </select>
+    
+            <button class="btn btn-primary" id="ordenarGeneradores">Ordenar</button>
+        </div>
         
         <!-- Botón para crear un nuevo generador -->
         <div class="mb-3">
@@ -27,7 +76,7 @@
                     <th>Acciones</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="generadoresTable">
                 {% for generador in lista %}
                 <tr>
                     <td>{{ generador.id }}</td>
@@ -55,8 +104,72 @@
         <!-- Botón para volver a la página principal -->
         <a href="{{ url_for('router.index') }}" class="btn btn-primary">Home</a>
     </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Función genérica para actualizar la tabla
+            function actualizarTabla(url) {
+                $.ajax({
+                    url: url,
+                    method: 'GET',
+                    success: function (response) {
+                        if (response.msg === "OK") {
+                            let filas = '';
+                            response.lista.forEach(generador => {
+                                filas += `
+                                    <tr>
+                                        <td>${generador.id}</td>
+                                        <td>${generador.marca}</td>
+                                        <td>${generador.potenciaGenerada}</td>
+                                        <td>${generador.costo}</td>
+                                        <td>${generador.consumoPorHora}</td>
+                                        <td>
+                                            <a href="/getGenerador/${generador.id}" class="btn btn-info btn-sm">Detalle</a>
+                                            <a href="/updateGenerador/${generador.id}" class="btn btn-warning btn-sm">Actualizar</a>
+                                            <form action="/deleteGenerador/${generador.id}" method="POST" style="display:inline;">
+                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar este generador?');">Eliminar</button>
+                                            </form>
+                                        </td>
+                                    </tr>`;
+                            });
+                            $('#generadoresTable').html(filas);
+                        } else {
+                            alert('No se encontraron resultados.');
+                        }
+                    },
+                    error: function () {
+                        alert('Error al cargar los datos.');
+                    }
+                });
+            }
+
+            // Búsqueda de generadores
+            $('#buscarGeneradores').click(function () {
+                const criterio = $('#criterioBusqueda').val();
+                const metodo = $('#metodoBusqueda').val();
+                const valor = $('#valorBusqueda').val();
+
+                if (!valor.trim()) {
+                    alert('Ingrese un valor para buscar.');
+                    return;
+                }
+
+                const url = `/searchGenerador/${criterio}/${metodo}/${valor}`;
+                actualizarTabla(url);
+            });
+
+            // Ordenación de generadores
+            $('#ordenarGeneradores').click(function () {
+                const criterio = $('#criterio').val();
+                const tipo = $('#tipo').val();
+                const metodo = $('#metodo').val();
+
+                const url = `/orderGenerador/${criterio}/${tipo}/${metodo}`;
+                actualizarTabla(url);
+            });
+        });
+    </script>
 </body>
 </html>

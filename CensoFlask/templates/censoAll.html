@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Censos</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/style.css') }}">
     <style>
         body {
             background-color: #f8f9fa;
@@ -21,51 +20,153 @@
 </head>
 <body>
 
-    <div class="container">
-        <h1 class="mt-4 mb-4">Lista de Censos</h1>
+<div class="container">
+    <h2>Lista de Censos</h2>
 
-        <div class="mb-3">
-            <a href="{{ url_for('router.save_censo') }}" class="btn btn-primary">Crear Censo</a>
-        </div>
+     <!-- Controles de búsqueda -->
+     <div class="form-inline mb-3">
+        <label class="mr-2" for="criterioBusqueda">Criterio de Búsqueda:</label>
+        <select class="form-control mr-3" id="criterioBusqueda">
+            <option value="id">ID</option>
+            <option value="familiasConGenerador">Familias con Generador</option>
+            <option value="provincia">Provincia</option>
+            <option value="familiasConGenerador">Familias con Generador</option>
+        </select>
 
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th scope="col">ID</th>
-                    <th scope="col">Provincia</th>
-                    <th scope="col">Familias</th>
-                    <th scope="col">Familias con Generador</th>
-                    <th scope="col" colspan="2" class="text-center">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in lista %}
-                <tr>
-                    <th scope="row">{{ item.id }}</th>
-                    <td>{{ item.provincia }}</td>
-                    <td>{{ item.totalFamilias }}</td>
-                    <td>{{ item.familiasConGenerador }}</td>
-                    <td class="text-center">
-                        <a href="{{ url_for('router.get_censo', id=item.id) }}" class="btn btn-info">Detalle</a>
-                    </td>
-                    <td class="text-center">
-                        <a href="{{ url_for('router.update_censo', censo_id=item.id) }}" class="btn btn-warning">Actualizar</a>
-                    </td>
-                    <td class="text-center">
-                        <form method="POST" action="{{ url_for('router.delete_censo', id=item.id) }}" style="display:inline;">
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar este censo?');">Eliminar</button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <a href="{{ url_for('router.index') }}" class="btn btn-primary">Home</a>
+        <label class="mr-2" for="metodoBusqueda">Método:</label>
+        <select class="form-control mr-3" id="metodoBusqueda">
+            <option value="linear">Búsqueda Lineal</option>
+            <option value="binary">Búsqueda Binaria</option>
+        </select>
+
+        <label class="mr-2" for="valorBusqueda">Valor:</label>
+        <input type="text" class="form-control mr-3" id="valorBusqueda" placeholder="Ingrese el valor a buscar">
+
+        <button class="btn btn-primary" id="buscarCensos">Buscar</button>
+
+    <!-- Controles para criterio, tipo y método -->
+    <div class="form-inline mb-3">
+        <label class="mr-2" for="criterio">Criterio:</label>
+        <select class="form-control mr-3" id="criterio">
+            <option value="id">ID</option>
+            <option value="provincia">Provincia</option>
+            <option value="totalFamilias">Total Familias</option>
+            <option value="familiasConGenerador">Familias con Generador</option>
+        </select>
+
+        <label class="mr-2" for="tipo">Tipo:</label>
+        <select class="form-control mr-3" id="tipo">
+            <option value="1">Ascendente</option>
+            <option value="0">Descendente</option>
+        </select>
+
+        <label class="mr-2" for="metodo">Método:</label>
+        <select class="form-control mr-3" id="metodo">
+            <option value="merge">Merge</option>
+            <option value="quick">Quick</option>
+            <option value="shell">Shell</option>
+        </select>
+
+        <button class="btn btn-primary" id="ordenarCensos">Ordenar</button>
     </div>
 
-    <script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <!-- Tabla de censos -->
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Provincia</th>
+                <th>Total Familias</th>
+                <th>Familias con Generador</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="censosTable">
+            {% for censo in lista %}
+            <tr>
+                <td>{{ censo.id }}</td>
+                <td>{{ censo.provincia }}</td>
+                <td>{{ censo.totalFamilias }}</td>
+                <td>{{ censo.familiasConGenerador }}</td>
+                <td>
+                    <a href="{{ url_for('router.get_censo', id=censo.id) }}" class="btn btn-info btn-sm">Ver Detalles</a>
+                    <a href="{{ url_for('router.update_censo', censo_id=censo.id) }}" class="btn btn-warning btn-sm">Actualizar</a>
+                    <form action="{{ url_for('router.delete_censo', id=censo.id) }}" method="POST" style="display:inline;">
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar este censo?');">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
+    <a href="{{ url_for('router.save_censo') }}" class="btn btn-success">Agregar Nuevo Censo</a>
+    <a href="{{ url_for('router.index') }}" class="btn btn-primary">Home</a>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+    
+        function actualizarTabla(url) {
+            $.ajax({
+                url: url,
+                method: 'GET',
+                success: function (response) {
+                    if (response.msg === "OK") {
+                        let filas = '';
+                        response.lista.forEach(censo => {
+                            filas += `
+                                <tr>
+                                    <td>${censo.id}</td>
+                                    <td>${censo.provincia}</td>
+                                    <td>${censo.totalFamilias}</td>
+                                    <td>${censo.familiasConGenerador}</td>
+                                    <td>
+                                        <a href="/getCenso/${censo.id}" class="btn btn-info btn-sm">Ver Detalles</a>
+                                        <a href="/updateCenso/${censo.id}" class="btn btn-warning btn-sm">Actualizar</a>
+                                        <form action="/deleteCenso/${censo.id}" method="POST" style="display:inline;">
+                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar este censo?');">Eliminar</button>
+                                        </form>
+                                    </td>
+                                </tr>`;
+                        });
+                        $('#censosTable').html(filas); // Actualizar tabla
+                    } else {
+                        alert('No se encontraron resultados o hubo un error.');
+                    }
+                },
+                error: function () {
+                    alert('Error al cargar datos.');
+                }
+            });
+        }
+
+        // Evento para búsqueda
+        $('#buscarCensos').click(function () {
+            const criterio = $('#criterioBusqueda').val();
+            const metodo = $('#metodoBusqueda').val();
+            const valor = $('#valorBusqueda').val();
+
+            if (!valor.trim()) {
+                alert('Ingrese un valor para buscar.');
+                return;
+            }
+
+            const url = `/searchCenso/${criterio}/${metodo}/${valor}`;
+            actualizarTabla(url);
+        });
+
+        // Evento para ordenación
+        $('#ordenarCensos').click(function () {
+            const criterio = $('#criterio').val();
+            const tipo = $('#tipo').val();
+            const metodo = $('#metodo').val();
+
+            const url = `/orderCenso/${criterio}/${tipo}/${metodo}`;
+            actualizarTabla(url);
+        });
+    });
+</script>
 </body>
 </html>

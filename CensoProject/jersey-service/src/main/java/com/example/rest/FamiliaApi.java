@@ -1,6 +1,7 @@
 package com.example.rest;
 
 import java.util.HashMap;
+import com.tercerotest.controller.tda.LinkedList;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -9,6 +10,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Link;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -106,8 +108,8 @@ public class FamiliaApi {
                 return Response.status(Status.NOT_FOUND).entity(res).build();
             }
             
-            existingFamilia.setTieneGenerador((boolean) map.get("tieneGenerador"));
-            existingFamilia.setCantidadPersonas((int) map.get("cantidadPersonas"));
+            existingFamilia.setTieneGenerador(Boolean.parseBoolean(map.get("tieneGenerador").toString()));
+            existingFamilia.setCantidadPersonas(Integer.parseInt(map.get("cantidadPersonas").toString()));
             existingFamilia.setRazonUso(map.get("razonUso").toString());
             
             fs.setFamilia(existingFamilia);
@@ -142,6 +144,123 @@ public class FamiliaApi {
 
         return Response.ok(jsonResponse).build();
     }
+
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/mergeOrder/{attribute}/{type}")
+    public Response mergeOrder(@PathParam("attribute") String attribute, @PathParam("type") Integer type) {
+        HashMap<String, Object> map = new HashMap<>();
+        FamiliaServices fs = new FamiliaServices();
+        
+        try {
+            map.put("msg", "OK");
+        
+            LinkedList<Familia> listita = fs.mergeOrder(attribute, type);
+            map.put("data", listita.toArray());
+            if (listita.isEmpty()){
+                map.put("data", new Object[]{});
+            }
+        } catch (Exception e) {
+            map.put("msg", "ERROR");
+            map.put("data", e.getMessage());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(map).build();
+        }
+        
+        return Response.ok(map).build();
+    }
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/quickOrder/{attribute}/{type}")
+    public Response quickOrder(@PathParam("attribute") String attribute, @PathParam("type") Integer type) {
+        HashMap<String, Object> map = new HashMap<>();
+        FamiliaServices fs = new FamiliaServices();
+        
+        try {
+            map.put("msg", "OK");
+            LinkedList<Familia> listita = fs.quickOrder(attribute, type);
+            map.put("data", listita.toArray());
+            if (listita.isEmpty()){
+                map.put("data", new Object[]{});
+            }
+        } catch (Exception e) {
+            map.put("msg", "ERROR");
+            map.put("data", e.getMessage());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(map).build();
+        }
+        
+        return Response.ok(map).build();
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/shellOrder/{attribute}/{type}")
+    public Response shellOrder(@PathParam("attribute") String attribute, @PathParam("type") Integer type) {
+        HashMap<String, Object> map = new HashMap<>();
+        FamiliaServices fs = new FamiliaServices();
+        
+        try {
+            map.put("msg", "OK");
+            LinkedList<Familia> listita = fs.shellOrder(attribute, type);
+            map.put("data", listita.toArray());
+            if (listita.isEmpty()){
+                map.put("data", new Object[]{});
+            }
+        } catch (Exception e) {
+            map.put("msg", "ERROR");
+            map.put("data", e.getMessage());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(map).build();
+        }
+        
+        return Response.ok(map).build();
+    }
+
+    @Path("/linearSearch/{attribute}/{value}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response linearSearch(@PathParam("attribute") String attribute, @PathParam("value") String value) {
+        HashMap map = new HashMap<>();
+        FamiliaServices fs = new FamiliaServices();
+        try{
+            map.put("msg", "OK");
+            LinkedList<Familia> listita = fs.linearSearch(attribute, value);
+            map.put("data", listita.toArray());
+            if (listita.isEmpty()) {
+                map.put("data", new Object[] {});
+        }
+        } catch (Exception e) {
+            map.put("msg", "ERROR");
+            map.put("data", e.getMessage());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(map).build();
+        }
+
+        return Response.ok(map).build();
+    }
+
+    @Path("/binarySearch/{attribute}/{value}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response binarySearch(@PathParam("attribute") String attribute, @PathParam("value") String value) {
+        HashMap map = new HashMap<>();
+        FamiliaServices fs = new FamiliaServices();
+        try{
+            map.put("msg", "OK");
+            LinkedList<Familia> listita = fs.quickOrder(attribute, 1);
+            listita = listita.binarySearch(attribute, value);
+            map.put("data", listita.toArray());
+            if (listita.isEmpty()) {
+                map.put("data", new Object[] {});
+        }
+        } catch (Exception e) {
+            map.put("msg", "ERROR");
+            map.put("data", e.getMessage());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(map).build();
+        }
+
+        return Response.ok(map).build();
+    }
+    
 
 
 }

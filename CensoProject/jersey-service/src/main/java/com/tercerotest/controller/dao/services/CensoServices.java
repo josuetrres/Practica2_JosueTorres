@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.tercerotest.controller.dao.implement.CensoDao;
 import com.tercerotest.controller.dao.implement.RegistroDao;
 import com.tercerotest.controller.tda.Censo;
+import com.tercerotest.controller.tda.Familia;
 import com.tercerotest.controller.tda.LinkedList;
 
 public class CensoServices {
@@ -52,5 +53,24 @@ public class CensoServices {
     public void deleteCenso(Integer id) throws Exception {
         obj.deleteCenso(id);
         registroDao.registrarEvento("Censo", "Eliminación de censo exitoso.");
+    }
+
+    public LinkedList<Censo> mergeOrder(String attribute, Integer type) throws Exception {
+        return obj.listAll().mergeOrder(attribute, type);
+    }
+
+    public LinkedList<Censo> quickOrder(String attribute, Integer type) throws Exception {
+        return obj.listAll().quickOrder(attribute, type);
+    }
+
+    public LinkedList<Censo> shellOrder(String attribute, Integer type) throws Exception {
+        return obj.listAll().shellOrder(attribute, type);
+    }
+    public LinkedList<Censo> linearSearch(String attribute, String value) throws Exception {
+        return obj.listAll().linearSearch(attribute, value);
+    }
+
+    public LinkedList<Censo> binarySearch(String attribute, String value) throws Exception {
+        return obj.listAll().binarySearch(attribute, value);
     }
 }

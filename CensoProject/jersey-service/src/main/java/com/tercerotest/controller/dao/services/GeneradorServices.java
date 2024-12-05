@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.tercerotest.controller.dao.implement.GeneradorDao;
 import com.tercerotest.controller.dao.implement.RegistroDao;
 import com.tercerotest.controller.tda.Censo;
+import com.tercerotest.controller.tda.Familia;
 import com.tercerotest.controller.tda.Generador;
 import com.tercerotest.controller.tda.LinkedList;
 import com.tercerotest.controller.tda.Registro;
@@ -56,5 +57,25 @@ public class GeneradorServices {
     public void deleteGenerador(Integer id) throws Exception {
         registroDao.registrarEvento("Generador", "Eliminación de generador con ID: " + obj.getGenerador().getId());
         obj.deleteGenerador(id);
+    }
+
+     public LinkedList<Generador> mergeOrder(String attribute, Integer type) throws Exception {
+        return obj.listAll().mergeOrder(attribute, type);
+    }
+
+    public LinkedList<Generador> quickOrder(String attribute, Integer type) throws Exception {
+        return obj.listAll().quickOrder(attribute, type);
+    }
+
+    public LinkedList<Generador> shellOrder(String attribute, Integer type) throws Exception {
+        return obj.listAll().shellOrder(attribute, type);
+    }
+
+    public LinkedList<Generador> linearSearch(String attribute, String value) throws Exception {
+        return obj.listAll().linearSearch(attribute, value);
+    }
+
+    public LinkedList<Generador> binarySearch(String attribute, String value) throws Exception {
+        return obj.listAll().binarySearch(attribute, value);
     }
 }

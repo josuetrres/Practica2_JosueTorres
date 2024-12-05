@@ -14,8 +14,13 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import com.google.gson.Gson;
+import com.tercerotest.controller.dao.services.CensoServices;
+import com.tercerotest.controller.dao.services.FamiliaServices;
 import com.tercerotest.controller.dao.services.GeneradorServices;
+import com.tercerotest.controller.tda.Censo;
+import com.tercerotest.controller.tda.Familia;
 import com.tercerotest.controller.tda.Generador;
+import com.tercerotest.controller.tda.LinkedList;
 
 @Path("generador")
 public class GeneradorApi {
@@ -145,4 +150,118 @@ public class GeneradorApi {
         return Response.ok(jsonResponse).build();
     }
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/mergeOrder/{attribute}/{type}")
+    public Response mergeOrder(@PathParam("attribute") String attribute, @PathParam("type") Integer type) {
+        HashMap<String, Object> map = new HashMap<>();
+        GeneradorServices gs = new GeneradorServices();
+        
+        try {
+            map.put("msg", "OK");
+            LinkedList<Generador> listita = gs.mergeOrder(attribute, type);
+            map.put("data", listita.toArray());
+            if (listita.isEmpty()){
+                map.put("data", new Object[]{});
+            }
+        } catch (Exception e) {
+            map.put("msg", "ERROR");
+            map.put("data", e.getMessage());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(map).build();
+        }
+        
+        return Response.ok(map).build();
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/quickOrder/{attribute}/{type}")
+    public Response quickOrder(@PathParam("attribute") String attribute, @PathParam("type") Integer type) {
+        HashMap<String, Object> map = new HashMap<>();
+        GeneradorServices gs = new GeneradorServices();
+        
+        try {
+            map.put("msg", "OK");
+            LinkedList<Generador> listita = gs.quickOrder(attribute, type);
+            map.put("data", listita.toArray());
+            if (listita.isEmpty()){
+                map.put("data", new Object[]{});
+            }
+        } catch (Exception e) {
+            map.put("msg", "ERROR");
+            map.put("data", e.getMessage());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(map).build();
+        }
+        
+        return Response.ok(map).build();
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/shellOrder/{attribute}/{type}")
+    public Response shellOrder(@PathParam("attribute") String attribute, @PathParam("type") Integer type) {
+        HashMap<String, Object> map = new HashMap<>();
+        GeneradorServices gs = new GeneradorServices();
+        
+        try {
+            map.put("msg", "OK");
+            LinkedList<Generador> listita = gs.shellOrder(attribute, type);
+            map.put("data", listita.toArray());
+            if (listita.isEmpty()){
+                map.put("data", new Object[]{});
+            }
+        } catch (Exception e) {
+            map.put("msg", "ERROR");
+            map.put("data", e.getMessage());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(map).build();
+        }
+        
+        return Response.ok(map).build();
+    }
+
+    @Path("/linearSearch/{attribute}/{value}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response linearSearch(@PathParam("attribute") String attribute, @PathParam("value") String value) {
+        HashMap map = new HashMap<>();
+        GeneradorServices gs = new GeneradorServices();
+        try{
+            map.put("msg", "OK");
+            LinkedList<Generador> listita = gs.linearSearch(attribute, value);
+            map.put("data", listita.toArray());
+            if (listita.isEmpty()) {
+                map.put("data", new Object[] {});
+        }
+        } catch (Exception e) {
+            map.put("msg", "ERROR");
+            map.put("data", e.getMessage());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(map).build();
+        }
+
+        return Response.ok(map).build();
+    }
+
+    @Path("/binarySearch/{attribute}/{value}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response binarySearch(@PathParam("attribute") String attribute, @PathParam("value") String value) {
+        HashMap map = new HashMap<>();
+        GeneradorServices gs = new GeneradorServices();
+        try{
+            map.put("msg", "OK");
+            LinkedList<Generador> listita = gs.quickOrder(attribute, 1);
+            listita = listita.binarySearch(attribute, value);
+            map.put("data", listita.toArray());
+            if (listita.isEmpty()) {
+                map.put("data", new Object[] {});
+        }
+        } catch (Exception e) {
+            map.put("msg", "ERROR");
+            map.put("data", e.getMessage());
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(map).build();
+        }
+
+        return Response.ok(map).build();
+    }
+    
 }

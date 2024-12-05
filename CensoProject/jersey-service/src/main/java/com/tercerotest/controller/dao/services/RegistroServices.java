@@ -3,6 +3,7 @@ package com.tercerotest.controller.dao.services;
 import com.google.gson.Gson;
 import com.tercerotest.controller.dao.implement.RegistroDao;
 import com.tercerotest.controller.tda.Registro;
+import com.tercerotest.controller.tda.Familia;
 import com.tercerotest.controller.tda.LinkedList;
 
 public class RegistroServices {
@@ -52,4 +53,5 @@ public class RegistroServices {
     public void registrarEvento(String accion, String descripcion) throws Exception {
         registroDao.registrarEvento(accion, descripcion);
     }
+
 }

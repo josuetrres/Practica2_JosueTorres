@@ -6,6 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import java.io.FileWriter;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
 
@@ -221,9 +222,9 @@ public E deleteLast() throws ListEmptyException {
         }
 }
 
-public E delete(Integer post) throws Exception {
+public E delete(Integer post) throws ListEmptyException {
     if (isEmpty()) {
-        throw new ListEmptyException("Error, lista vacia");
+        throw new ListEmptyException("Error, la lista esta vacia");
     } else if (post < 0 || post >= size) {
         throw new IndexOutOfBoundsException("Error, esta fuera de los limites de la lista");
     } else if (post == 0) {
@@ -233,14 +234,312 @@ public E delete(Integer post) throws Exception {
     } else {
         Node<E> preview = getNode(post - 1);
         Node<E> actually = getNode(post);
-        E element = actually.getInfo(); // Cambiar a actually.getInfo()
+        E element = preview.getInfo();
         Node<E> next = actually.getNext();
-        preview.setNext(next); // Enlaza el nodo previo al siguiente
+        actually = null;
+        preview.setNext(next);
         size--;
-        return element; // Retorna el elemento eliminado
+        return element;
     }
 }
 
+
+
+private Boolean compare(Object a, Object b, Integer type) {
+    switch (type) {
+        case 0:
+            if (a instanceof Number) {
+                Number a1 = (Number) a;
+                Number b1 = (Number) b;
+                return a1.doubleValue() > b1.doubleValue();
+            } else {
+                // "casa" > "pedro"
+                return (a.toString()).compareTo(b.toString()) > 0;
+            }
+            // break;
+
+        default:
+            // mayor a menor
+            if (a instanceof Number) {
+                Number a1 = (Number) a;
+                Number b1 = (Number) b;
+                return a1.doubleValue() < b1.doubleValue();
+            } else {
+                // "casa" > "pedro"
+                return (a.toString()).compareTo(b.toString()) < 0;
+            }
+            // break;
+    }
+
+}
+
+// compare class
+private Boolean atrribute_compare(String attribute, E a, E b, Integer type) throws Exception {
+    return compare(exist_attribute(a, attribute), exist_attribute(b, attribute), type);
+}
+
+private Object exist_attribute(E a, String attribute) throws Exception {
+    Method method = null;
+    attribute = attribute.substring(0, 1).toUpperCase() + attribute.substring(1);
+    attribute = "get" + attribute;
+    for (Method aux : a.getClass().getMethods()) {           
+        if (aux.getName().contains(attribute)) {
+            method = aux;
+            break;
+        }
+    }
+    if (method == null) {
+        for (Method aux : a.getClass().getSuperclass().getMethods()) {              
+            if (aux.getName().contains(attribute)) {
+                method = aux;
+                break;
+            }
+        }
+    }
+    if (method != null) {            
+        return method.invoke(a);
+    }
+    
+    return null;
+}
+
+
+public LinkedList<E> mergeOrder(String attribute, Integer type) throws Exception {
+    if (!isEmpty()) {
+        E[] array = this.toArray();
+        array = mergeSort(array, attribute, type);
+        reset(); 
+        this.toList(array); 
+    }
+    return this;
+}
+
+private E[] createSubArray(E[] array, int start, int end) {
+    @SuppressWarnings("unchecked")
+    E[] subArray = (E[]) new Object[end - start];
+    for (int i = start, j = 0; i < end; i++, j++) {
+        subArray[j] = array[i]; 
+    }
+    return subArray;
+}
+
+private E[] mergeSort(E[] array, String attribute, Integer type) throws Exception {
+    if (array.length <= 1) {
+        return array;
+    }
+
+    int mid = array.length / 2;
+
+    E[] left = createSubArray(array, 0, mid);
+    E[] right = createSubArray(array, mid, array.length);
+
+
+    left = mergeSort(left, attribute, type);
+    right = mergeSort(right, attribute, type);
+
+    return merge(left, right, attribute, type);
+}
+
+private E[] merge(E[] left, E[] right, String attribute, Integer type) throws Exception {
+    @SuppressWarnings("unchecked")
+    E[] result = (E[]) new Object[left.length + right.length];
+    int i = 0, j = 0, k = 0;
+
+    while (i < left.length && j < right.length) {
+        if (!atrribute_compare(attribute, right[j],left[i], type)) {
+            result[k++] = left[i++];
+        } else {
+            result[k++] = right[j++];
+        }
+    }
+
+    while (i < left.length) {
+        result[k++] = left[i++];
+    }
+
+    while (j < right.length) {
+        result[k++] = right[j++];
+    }
+
+    return result;
+}
+
+
+
+
+public LinkedList<E> quickOrder(String attribute, Integer type) throws Exception {
+    if (!isEmpty()) {
+        E[] array = this.toArray(); 
+        quickSort(array, 0, array.length - 1, attribute, type); 
+        reset();
+        this.toList(array); 
+    }
+    return this;
+}
+
+private void quickSort(E[] array, int low, int high, String attribute, Integer type) throws Exception {
+    if (low < high) {
+        int pivotIndex = partition(array, low, high, attribute, type); 
+        quickSort(array, low, pivotIndex - 1, attribute, type); 
+        quickSort(array, pivotIndex + 1, high, attribute, type); 
+    }
+}
+
+//divide y reorganiza en torno al pivote(swap) y retorna la posición del pivote
+private int partition(E[] array, int low, int high, String attribute, Integer type) throws Exception {
+    E pivot = array[high]; 
+    int i = low - 1; 
+
+    for (int j = low; j < high; j++) {
+        if (!atrribute_compare(attribute, pivot, array[j], type)) {
+            i++;
+            E temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+        }
+    }
+
+    E temp = array[i + 1];
+    array[i + 1] = array[high];
+    array[high] = temp;
+
+    return i + 1; 
+}
+
+
+
+
+
+
+public LinkedList<E> shellOrder(String attribute, Integer type) throws Exception {
+    if (!isEmpty()) {
+        E data = this.header.getInfo();
+        if (data instanceof Object) {
+            E[] lista = this.toArray();
+            reset();
+            shellSort(lista, attribute, type);  
+            this.toList(lista);
+        }
+    }
+    return this;
+}
+
+private void shellSort(E[] array, String attribute, Integer type) throws Exception {
+    int n = array.length;
+
+    for (int gap = n / 2; gap > 0; gap /= 2) {  
+        for (int i = gap; i < n; i++) {
+            E temp = array[i];
+            int j = i;
+            
+            while (j >= gap && atrribute_compare(attribute,temp, array[j - gap], type)) {
+                array[j] = array[j - gap];  
+                j -= gap;  
+            }
+            array[j] = temp;  
+        }
+    }
+}
+
+
+
+public LinkedList<E> linearSearch(String attribute, String value) throws Exception {
+    LinkedList<E> listita = new LinkedList<>();
+    E[] array = this.toArray(); 
+
+    for (int i = 0; i < array.length; i++) {
+        E element = array[i];
+        Object attributeValue = exist_attribute(element, attribute); 
+
+        if (attributeValue != null) {
+            String attributeValueStr = attributeValue.toString().toLowerCase(); 
+            String valueStr = value.toLowerCase(); 
+
+            if (attributeValueStr.startsWith(valueStr)) {
+                listita.add(element); 
+            }
+        }
+    }
+
+    return listita;
+
+}
+
+
+
+
+public LinkedList<E> binarySearch(String attribute, String value) throws Exception {
+    LinkedList<E> resultList = new LinkedList<>();
+    E[] array = this.toArray();
+    int low = 0;
+    int high = array.length - 1;
+
+    
+    while (low <= high) {
+        int mid = low + (high - low) / 2;
+        E midElement = array[mid];
+        Object attributeValue = exist_attribute(midElement, attribute);
+        
+        if (attributeValue != null) {
+            String attributeValueStr = attributeValue.toString().toLowerCase();
+            String valueStr = value.toLowerCase();
+
+            if (attributeValueStr.startsWith(valueStr)) {
+                
+                collectResults(array, mid, attribute, value, resultList);
+                break;
+            } else if (attributeValueStr.compareTo(valueStr) < 0) {
+                low = mid + 1; 
+            } else {
+                high = mid - 1; 
+            }
+        }
+    }
+
+    return resultList;
+}
+
+private void collectResults(E[] array, int mid, String attribute, String value, LinkedList<E> resultList) throws Exception {
+
+    E midElement = array[mid];
+    Object attributeValue = exist_attribute(midElement, attribute);
+    String attributeValueStr = attributeValue.toString().toLowerCase();
+    String valueStr = value.toLowerCase();
+    
+
+    if (attributeValueStr.startsWith(valueStr)) {
+        resultList.add(midElement);
+    }
+
+
+    int left = mid - 1;
+    while (left >= 0) {
+        E leftElement = array[left];
+        Object leftAttributeValue = exist_attribute(leftElement, attribute);
+        String leftAttributeValueStr = leftAttributeValue.toString().toLowerCase();
+
+        if (leftAttributeValueStr.startsWith(valueStr)) {
+            resultList.add(leftElement);
+            left--;
+        } else {
+            break;
+        }
+    }
+
+    int right = mid + 1;
+    while (right < array.length) {
+        E rightElement = array[right];
+        Object rightAttributeValue = exist_attribute(rightElement, attribute);
+        String rightAttributeValueStr = rightAttributeValue.toString().toLowerCase();
+
+        if (rightAttributeValueStr.startsWith(valueStr)) {
+            resultList.add(rightElement);
+            right++;
+        } else {
+            break;
+        }
+    }
+}
 
 }
 

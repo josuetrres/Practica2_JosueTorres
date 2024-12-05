@@ -9,6 +9,59 @@
 <body>
     <div class="container mt-5">
         <h2>Lista de Familias</h2>
+
+        <div class="form-inline mb-3">
+            <label class="mr-2" for="criterioBusqueda">Criterio:</label>
+            <select class="form-control mr-3" id="criterioBusqueda">
+                <option value="id">ID</option>
+                <option value="tieneGenerador">Tiene Generador</option>
+                <option value="cantidadPersonas">Cantidad de Personas</option>
+                <option value="razonUso">Razón de Uso</option>
+            </select>
+        
+            <label class="mr-2" for="metodoBusqueda">Método:</label>
+            <select class="form-control mr-3" id="metodoBusqueda">
+                <option value="linear">Búsqueda Lineal</option>
+                <option value="binary">Búsqueda Binaria</option>
+            </select>
+        
+            <label class="mr-2" for="valorBusqueda">Valor:</label>
+            <input type="text" class="form-control mr-3" id="valorBusqueda" placeholder="Ingrese valor a buscar">
+        
+            <button class="btn btn-primary" id="buscarFamilias">Buscar</button>
+        </div>
+
+        <div id="resultadoBusqueda" class="mt-3"></div>
+
+        
+    
+        <!-- Controles para criterio, tipo y método -->
+        <div class="form-inline mb-3">
+            <label class="mr-2" for="criterio">Criterio:</label>
+            <select class="form-control mr-3" id="criterio">
+                <option value="id">ID</option>
+                <option value="tieneGenerador">Tiene Generador</option>
+                <option value="cantidadPersonas">Cantidad de Personas</option>
+                <option value="razonUso">Razón de Uso</option>
+            </select>
+    
+            <label class="mr-2" for="tipo">Tipo:</label>
+            <select class="form-control mr-3" id="tipo">
+                <option value="1">Ascendente</option>
+                <option value="0">Descendente</option>
+            </select>
+    
+            <label class="mr-2" for="metodo">Método:</label>
+            <select class="form-control mr-3" id="metodo">
+                <option value="merge">Merge</option>
+                <option value="quick">Quick</option>
+                <option value="shell">Shell</option>
+            </select>
+    
+            <button class="btn btn-primary" id="ordenarFamilias">Ordenar</button>
+        </div>
+    
+        <!-- Tabla de familias -->
         <table class="table table-bordered">
             <thead>
                 <tr>
@@ -19,7 +72,7 @@
                     <th>Acciones</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="familiasTable">
                 {% for familia in lista %}
                 <tr>
                     <td>{{ familia.id }}</td>
@@ -37,11 +90,85 @@
                 {% endfor %}
             </tbody>
         </table>
+    
         <a href="{{ url_for('router.save_familia') }}" class="btn btn-success">Agregar Nueva Familia</a>
         <a href="{{ url_for('router.index') }}" class="btn btn-primary">Home</a>
     </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Función genérica para manejar AJAX
+            function cargarFamilias(accion, criterio, metodo, tipo = null, valor = null) {
+                let url;
+    
+                // Configurar la URL según la acción
+                if (accion === "ordenar") {
+                    url = `/orderFamilia/${criterio}/${tipo}/${metodo}`;
+                } else if (accion === "buscar") {
+                    url = `/searchFamilia/${criterio}/${metodo}/${valor}`;
+                } else {
+                    alert("Acción no válida");
+                    return;
+                }
+    
+                // Enviar solicitud AJAX
+                $.ajax({
+                    url: url,
+                    method: 'GET',
+                    success: function (response) {
+                        if (response.msg === "OK") {
+                            // Construir las filas de la tabla
+                            let filas = '';
+                            response.lista.forEach(familia => {
+                                filas += `
+                                    <tr>
+                                        <td>${familia.id}</td>
+                                        <td>${familia.tieneGenerador ? 'Sí' : 'No'}</td>
+                                        <td>${familia.cantidadPersonas}</td>
+                                        <td>${familia.razonUso}</td>
+                                        <td>
+                                            <a href="/getFamilia/${familia.id}" class="btn btn-info btn-sm">Ver Detalles</a>
+                                            <a href="/updateFamilia/${familia.id}" class="btn btn-warning btn-sm">Actualizar</a>
+                                            <form action="/deleteFamilia/${familia.id}" method="POST" style="display:inline;">
+                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar esta familia?');">Eliminar</button>
+                                            </form>
+                                        </td>
+                                    </tr>`;
+                            });
+                            $('#familiasTable').html(filas); // Actualizar tabla
+                        } else {
+                            alert(response.error || 'Error desconocido al procesar la solicitud.');
+                        }
+                    },
+                    error: function () {
+                        alert(`Error al ${accion === "ordenar" ? "ordenar" : "buscar"} familias.`);
+                    }
+                });
+            }
+    
+            // Manejar evento de ordenación
+            $('#ordenarFamilias').click(function () {
+                const criterio = $('#criterio').val();
+                const tipo = $('#tipo').val();
+                const metodo = $('#metodo').val();
+    
+                cargarFamilias("ordenar", criterio, metodo, tipo);
+            });
+    
+            // Manejar evento de búsqueda
+            $('#buscarFamilias').click(function () {
+                const criterio = $('#criterioBusqueda').val();
+                const metodo = $('#metodoBusqueda').val();
+                const valor = $('#valorBusqueda').val();
+    
+                cargarFamilias("buscar", criterio, metodo, null, valor);
+            });
+        });
+    </script>
+    
 </body>
 </html>

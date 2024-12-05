@@ -58,4 +58,23 @@ public class FamiliaServices {
         obj.deleteFamilia(id);
     }
 
+    public LinkedList<Familia> mergeOrder(String attribute, Integer type) throws Exception {
+        return obj.listAll().mergeOrder(attribute, type);
+    }
+
+    public LinkedList<Familia> quickOrder(String attribute, Integer type) throws Exception {
+        return obj.listAll().quickOrder(attribute, type);
+    }
+
+    public LinkedList<Familia> shellOrder(String attribute, Integer type) throws Exception {
+        return obj.listAll().shellOrder(attribute, type);
+    }
+
+    public LinkedList<Familia> linearSearch(String attribute, String value) throws Exception {
+        return obj.listAll().linearSearch(attribute, value);
+    }
+
+    public LinkedList<Familia> binarySearch(String attribute, String value) throws Exception {
+        return obj.listAll().binarySearch(attribute, value);
+    }
 }
