@@ -131,7 +131,7 @@ public class CensoApi {
     }
 
 
-    @DELETE
+    @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/delete/{id}")
     public Response deleteCenso(@PathParam("id") Integer id) {

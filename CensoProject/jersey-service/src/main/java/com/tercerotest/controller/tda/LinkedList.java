@@ -474,32 +474,46 @@ public LinkedList<E> binarySearch(String attribute, String value) throws Excepti
     int low = 0;
     int high = array.length - 1;
 
-    
     while (low <= high) {
         int mid = low + (high - low) / 2;
         E midElement = array[mid];
         Object attributeValue = exist_attribute(midElement, attribute);
-        
+
         if (attributeValue != null) {
             String attributeValueStr = attributeValue.toString().toLowerCase();
             String valueStr = value.toLowerCase();
 
-            if (attributeValueStr.startsWith(valueStr)) {
-                
-                collectResults(array, mid, attribute, value, resultList);
-                break;
-            } else if (attributeValueStr.compareTo(valueStr) < 0) {
-                low = mid + 1; 
+            if (attributeValue instanceof Number) {
+                try {
+                    Float attributeValueInt = Float.parseFloat(attributeValueStr);
+                    Float valueInt = Float.parseFloat(valueStr);
+
+                    if (attributeValueInt.equals(valueInt)) {
+                        resultList.add(midElement);
+                        break;
+                    } else if (compare(attributeValueInt, valueInt, 0)) {
+                        high = mid - 1;
+                    } else {
+                        low = mid + 1;
+                    }
+                } catch (Exception e) {
+                }
             } else {
-                high = mid - 1; 
+                if (attributeValueStr.equals(valueStr)) {
+                    resultList.add(midElement);
+                    break;
+                } else if (compare(attributeValueStr, valueStr, 0)) {
+                    high = mid - 1;
+                } else {
+                    low = mid + 1;
+                }
             }
         }
     }
 
     return resultList;
 }
-
-private void collectResults(E[] array, int mid, String attribute, String value, LinkedList<E> resultList) throws Exception {
+/*private void collectResults(E[] array, int mid, String attribute, String value, LinkedList<E> resultList) throws Exception {
 
     E midElement = array[mid];
     Object attributeValue = exist_attribute(midElement, attribute);
@@ -540,6 +554,6 @@ private void collectResults(E[] array, int mid, String attribute, String value, 
         }
     }
 }
-
+*/
 }
 

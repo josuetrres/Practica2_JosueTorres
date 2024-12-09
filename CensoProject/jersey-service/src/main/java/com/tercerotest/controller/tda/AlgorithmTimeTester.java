@@ -19,7 +19,6 @@ public class AlgorithmTimeTester {
         
         LinkedList<Numero> lista = new LinkedList<>();
         lista = lista.toList(arregloOriginal);
-
         Long start = System.nanoTime();
         switch (metodo) {
             case "shell":

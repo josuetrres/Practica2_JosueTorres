@@ -80,7 +80,7 @@ def update_censo(censo_id):
 @router.route('/deleteCenso/<int:id>', methods=['POST'])
 def delete_censo(id):
     
-    response = requests.delete(f'http://localhost:8080/myapp/censo/delete/{id}')
+    response = requests.post(f'http://localhost:8080/myapp/censo/delete/{id}')
     
     if response.status_code == 200:
         flash('Censo eliminado correctamente', 'success')
